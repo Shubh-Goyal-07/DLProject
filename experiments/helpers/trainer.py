@@ -32,7 +32,7 @@ class Trainer():
         for epoch in range(epochs):
             running_loss = 0
 
-            for batch_idx, (data, target) in enumerate(train_loader):
+            for data, target in train_loader:
                 data, target = data.to(self.device), target.to(self.device)
                 self.optimizer.zero_grad()
                 output = self.model(data)
