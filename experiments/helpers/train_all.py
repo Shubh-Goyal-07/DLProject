@@ -3,14 +3,32 @@ import torch.optim as optim
 
 import matplotlib.pyplot as plt
 
+import torch.nn as nn
+
+import copy
+
 import os
 os.chdir('/home/raid/Desktop/Shubh/DLProject/experiments/')
 
 from optimizers.customAdam import customAdam
+from optimizers.customAdam2 import customAdam2
+
+optimizers_dict = {
+                    "Adam_custom" : customAdam,
+                    "Adam_torch" : optim.Adam,
+                    "RMS_torch" : optim.RMSprop,
+                    "AdaGrad_torch" : optim.Adagrad }
 
 
-optimizers_dict = { "Adam_torch" : optim.Adam,
-                    "Adam_custom" : customAdam }
+def initialize_weights_xavier(model):
+    # torch.manual_seed(0)
+
+    for module in model.modules():
+        if isinstance(module, (nn.Linear, nn.Conv2d, nn.ConvTranspose2d)):
+            nn.init.xavier_uniform_(module.weight)
+            if module.bias is not None:
+                nn.init.constant_(module.bias, 0)
+
 
 
 # Helper class user for training and testing
@@ -32,37 +50,40 @@ class TrainerAll():
         self.test_loss_log = {}
         self.test_acc_log = {}
 
-    def train(self):
+    def train(self, model_local, opt):
         # defining local variables for the class
         train_loss_optim = []
         train_acc_optim = []
         test_loss_optim = []
         test_acc_optim = []
 
-        # train loop
-        self.model.train()
+        model_local = copy.deepcopy(model_local)
+        optimizer = optimizers_dict[opt](model_local.parameters(), self.lr)
+
 
         for epoch in range(self.epochs):
             train_loss = 0
 
+            model_local.train()
+
             for data, target in self.train_loader:
                 data, target = data.to(self.device), target.to(self.device)
-                self.optimizer.zero_grad()
-                output = self.model(data)
+                optimizer.zero_grad()
+                output = model_local(data)
                 loss = self.criterion(output, target)
                 loss.backward()
-                self.optimizer.step()
+                optimizer.step()
                 
                 train_loss += loss.item()
                 train_acc = 100*torch.sum(torch.argmax(output, dim=1) == target).item()/len(target)
 
-            self.model.eval()
+            model_local.eval()
 
             test_loss = 0
             with torch.no_grad():
                 for data, target in self.test_loader:
                     data, target = data.to(self.device), target.to(self.device)
-                    output = self.model(data)
+                    output = model_local(data)
                     test_loss += self.criterion(output, target).item()
 
                     test_acc = 100*torch.sum(torch.argmax(output, dim=1) == target).item()/len(target)
@@ -82,19 +103,21 @@ class TrainerAll():
         return train_loss_optim, test_loss_optim, train_acc_optim, test_acc_optim
     
     def train_all_optim(self, model):
-        for optimizer in optimizers_dict:
-            print(f"Optimizer : {optimizer}")
+        model.apply(initialize_weights_xavier)
+        for opt in optimizers_dict:
+            print(f"Optimizer : {opt}")
+            # self.model = None
+            # self.model = model
+            # self.optimizer = optimizers_dict[optimizer](self.model.parameters(), self.lr)
 
-            self.model = model
-            self.optimizer = optimizers_dict[optimizer](self.model.parameters(), self.lr)
 
-            train_loss, test_loss, train_acc, test_acc = self.train()
+            train_loss, test_loss, train_acc, test_acc = self.train(model, opt)
 
-            self.train_loss_log[optimizer] = train_loss
-            self.train_acc_log[optimizer] = train_acc
+            self.train_loss_log[opt] = train_loss
+            self.train_acc_log[opt] = train_acc
 
-            self.test_loss_log[optimizer] = test_loss
-            self.test_acc_log[optimizer] = test_acc
+            self.test_loss_log[opt] = test_loss
+            self.test_acc_log[opt] = test_acc
 
         log = {
             'train_losses' : self.train_loss_log,
@@ -109,13 +132,14 @@ class TrainerAll():
         epoch_x = [i for i in range(1, self.epochs+1)]
         
         # plot loss curves for train and validation in two separate graphs
-        fig, axs = plt.subplots(1, 2, figsize=(16, 4))
+        fig, axs = plt.subplots(1, 2, figsize=(16, 8))
 
         for key in self.train_loss_log:
             axs[0].plot(epoch_x, self.train_loss_log[key], label=key)
         axs[0].set_title('Train Loss')
         axs[0].set_xlabel('Epochs')
         axs[0].set_ylabel('Loss')
+        axs[0].grid()
         axs[0].legend()
 
         for key in self.test_loss_log:
@@ -123,6 +147,32 @@ class TrainerAll():
         axs[1].set_title('Test Loss')
         axs[1].set_xlabel('Epochs')
         axs[1].set_ylabel('Loss')
+        axs[1].grid()
         axs[1].legend()
 
         return         
+    
+    def plot_acc_graphs(self):
+        epoch_x = [i for i in range(1, self.epochs+1)]
+        
+        # plot loss curves for train and validation in two separate graphs
+        fig, axs = plt.subplots(1, 2, figsize=(16, 8))
+
+        for key in self.train_acc_log:
+            axs[0].plot(epoch_x, self.train_acc_log[key], label=key)
+        axs[0].set_title('Train Accuracies')
+        axs[0].set_xlabel('Epochs')
+        axs[0].set_ylabel('Accuracy')
+        axs[0].grid()
+        axs[0].legend()
+
+        for key in self.test_acc_log:
+            axs[1].plot(epoch_x, self.test_acc_log[key], label=key)
+        axs[1].set_title('Test Accuracies')
+        axs[1].set_xlabel('Epochs')
+        axs[1].set_ylabel('Accuracy')
+        axs[1].grid()
+        axs[1].legend()
+
+        return    
+
