@@ -13,7 +13,6 @@ os.chdir('/home/raid/Desktop/Shubh/DLProject/experiments/')
 
 
 optimizers_dict = {
-                    # "Adam_custom" : customAdam5,
                     "Adam_torch" : optim.Adam,
                     # "RMS_torch" : optim.RMSprop,
                     "AdaGrad_torch" : optim.Adagrad
@@ -96,8 +95,8 @@ class TrainerGAN():
             train_loss_disc = 0
             train_loss_gen = 0
 
-            if (not flag_inc) and (not flag_dec):
-                cnt += 1
+            # if (not flag_inc) and (not flag_dec):
+            #     cnt += 1
             
             disc_local.train()
             gen_local.train()
@@ -287,11 +286,11 @@ class TrainerGAN():
         axs[0].legend()
 
         for key in log[mod2]:
-            axs[0].plot(epoch_x, log[mod2][key], label=key)
-        axs[0].set_title('Discriminator Losses')
-        axs[0].set_xlabel('Epochs')
-        axs[0].set_ylabel('Loss')
-        axs[0].grid()
-        axs[0].legend()
+            axs[1].plot(epoch_x, log[mod2][key], label=key)
+        axs[1].set_title('Discriminator Losses')
+        axs[1].set_xlabel('Epochs')
+        axs[1].set_ylabel('Loss')
+        axs[1].grid()
+        axs[1].legend()
 
         return

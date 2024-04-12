@@ -12,12 +12,10 @@ os.chdir('/home/raid/Desktop/Shubh/DLProject/experiments/')
 
 from optimizers.customAdam import customAdam
 from optimizers.customAdam2 import customAdam2
-from optimizers.customAdam5 import customAdam5
 from optimizers.customAdam3 import customAdam3
 
 
 optimizers_dict = {
-                    # "Adam_custom" : customAdam5,
                     "Adam_torch" : optim.Adam,}
                     # "RMS_torch" : optim.RMSprop,
                     # "AdaGrad_torch" : optim.Adagrad }

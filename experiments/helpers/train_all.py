@@ -14,7 +14,6 @@ from optimizers.customAdam import customAdam
 from optimizers.customAdam2 import customAdam2
 from optimizers.customAdam3 import customAdam3
 from optimizers.customAdam4 import customAdam4
-from optimizers.customAdam5 import customAdam5
 
 optimizers_dict = {
                     "Adam_custom" : customAdam4,
