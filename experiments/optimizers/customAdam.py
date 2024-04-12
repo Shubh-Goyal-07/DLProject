@@ -1,3 +1,4 @@
+import json
 import torch
 import torch.nn as nn
 import math
@@ -29,6 +30,8 @@ class customAdam(torch.optim.Optimizer):
                 beta1, beta2 = group['betas']
                 state['step'] += 1
                 beta1,beta2 = min(beta1*math.exp(-state['step']), 0.99) ,min(beta2*math.exp(-state['step']), 0.99)
+
+                state['grad'] = grad
                 state['exp_avg'] = beta1 * state['exp_avg'] + (1 - beta1) * grad
                 state['exp_avg_sq'] = beta2 * state['exp_avg_sq'] + (1 - beta2) * grad**2
 
@@ -45,6 +48,7 @@ class customAdam(torch.optim.Optimizer):
                 #     bias_correction1 = 1 - beta1**state['step']
                 #     bias_correction2 = 1 - beta2**state['step']
 
+                #     p.data.addcdiv_(state['exp_avg'], (state['exp_avg_sq'] / bias_correction2).sqrt() + group['eps'], value=-group['lr'] / bias_correction1)
                 #     p.data.addcdiv_(state['exp_avg'], (state['exp_avg_sq'] / bias_correction2).sqrt() + group['eps'], value=-group['lr'] / bias_correction1)
 
         return loss

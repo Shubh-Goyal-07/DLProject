@@ -12,9 +12,12 @@ os.chdir('/home/raid/Desktop/Shubh/DLProject/experiments/')
 
 from optimizers.customAdam import customAdam
 from optimizers.customAdam2 import customAdam2
+from optimizers.customAdam3 import customAdam3
+from optimizers.customAdam4 import customAdam4
+from optimizers.customAdam5 import customAdam5
 
 optimizers_dict = {
-                    "Adam_custom" : customAdam,
+                    "Adam_custom" : customAdam4,
                     "Adam_torch" : optim.Adam,
                     "RMS_torch" : optim.RMSprop,
                     "AdaGrad_torch" : optim.Adagrad }
@@ -60,22 +63,24 @@ class TrainerAll():
         model_local = copy.deepcopy(model_local)
         optimizer = optimizers_dict[opt](model_local.parameters(), self.lr)
 
-
+        train_acc = 0
+        test_acc = 0
         for epoch in range(self.epochs):
             train_loss = 0
 
             model_local.train()
-
+            train_acc = 0
+            test_acc = 0
             for data, target in self.train_loader:
                 data, target = data.to(self.device), target.to(self.device)
                 optimizer.zero_grad()
                 output = model_local(data)
                 loss = self.criterion(output, target)
-                loss.backward()
+                loss.backward(create_graph = True)
                 optimizer.step()
                 
                 train_loss += loss.item()
-                train_acc = 100*torch.sum(torch.argmax(output, dim=1) == target).item()/len(target)
+                train_acc += 100*torch.sum(torch.argmax(output, dim=1) == target).item()/len(target)
 
             model_local.eval()
 
@@ -86,16 +91,16 @@ class TrainerAll():
                     output = model_local(data)
                     test_loss += self.criterion(output, target).item()
 
-                    test_acc = 100*torch.sum(torch.argmax(output, dim=1) == target).item()/len(target)
+                    test_acc += 100*torch.sum(torch.argmax(output, dim=1) == target).item()/len(target)
 
             train_loss = train_loss/len(self.train_loader)
             test_loss = test_loss/len(self.test_loader)
 
             train_loss_optim.append(train_loss)
-            train_acc_optim.append(train_acc)
+            train_acc_optim.append(train_acc/len(self.test_loader))
 
             test_loss_optim.append(test_loss)
-            test_acc_optim.append(test_acc)
+            test_acc_optim.append(test_acc/len(self.test_loader))
 
             if (epoch%10==9):
                 print(f'{epoch+1 :>6} {train_loss :>25} {test_loss :>25}')
@@ -175,4 +180,3 @@ class TrainerAll():
         axs[1].legend()
 
         return    
-
