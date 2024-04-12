@@ -24,25 +24,25 @@
 
 
 ## Experiments Directory Description
-Helpers : 
-    Contains the helper files that are used in the experiments (Training Functions)
-    1. train_all.py : Helps to run all the optmisers on the model without scheduling of learning rate
-    2. train_all_2.py : Helps to run all the optimisers on the model with scheduling of learning rate
-    3. train_GAN.py : Helps to run the GAN model with the optimisers
-    4. trainer.py : Helps to make your own custom trainer for the model
+Helpers : <br>
+Contains the helper files that are used in the experiments (Training Functions)<br>
+<pre>    1. train_all.py : Helps to run all the optmisers on the model without scheduling of learning rate <br>
+    2. train_all_2.py : Helps to run all the optimisers on the model with scheduling of learning rate<br>
+    3. train_GAN.py : Helps to run the GAN model with the optimisers<br>
+    4. trainer.py : Helps to make your own custom trainer for the model<br></pre> 
 
-Models :
-    Contains the models that are run (Training Models)
-    1. cifar10_adam_cnn.ipynb : Contains the cnn model trained on cifar10 dataset using our experminetal optimizers and other standard optimizers
-    2. cifar10_GAN.ipynb : Contains the GAN model trained on cifar10 dataset using our experminetal optimizers and other standard optimizers
-    3. cifar10_resnet.ipynb : Contains the resnet18 model trained on cifar10 dataset using our experminetal optimizers and other standard optimizers
-    4. imagenet_resnet18.ipynb : Contains the resnet18 model trained on imagenet dataset using our experminetal optimizers and other standard optimizers without scheduling of learning rate
-    5. imagenet_resnet18_scheduled.ipynb : Contains the resnet18 model trained on imagenet dataset using our experminetal optimizers and other standard optimizers with scheduling of learning rate
-    6. mnist_adam_cnn.ipynb : Contains the cnn model trained on mnist dataset using our experminetal optimizers and other standard optimizers
+Models :<br>
+Contains the models that are run (Training Models)<br>
+<pre>    1. cifar10_adam_cnn.ipynb : Contains the cnn model trained on cifar10 dataset using our experminetal optimizers and other standard optimizers<br>
+    2. cifar10_GAN.ipynb : Contains the GAN model trained on cifar10 dataset using our experminetal optimizers and other standard optimizers<br>
+    3. cifar10_resnet.ipynb : Contains the resnet18 model trained on cifar10 dataset using our experminetal optimizers and other standard optimizers<br>
+    4. imagenet_resnet18.ipynb : Contains the resnet18 model trained on imagenet dataset using our experminetal optimizers and other standard optimizers without scheduling of learning rate<br>
+    5. imagenet_resnet18_scheduled.ipynb : Contains the resnet18 model trained on imagenet dataset using our experminetal optimizers and other standard optimizers with scheduling of learning rate<br>
+    6. mnist_adam_cnn.ipynb : Contains the cnn model trained on mnist dataset using our experminetal optimizers and other standard optimizers <br></pre> 
 
-Optimizers :
-    Contains the self defined optimizers that were used in the intital experiments (Training Optimizers)
-    1. customAdam.py : Contains the custom Adam optimizer same as the original Adam optimizer
-    2. customAdam2.py : Contains the custom Adam optimizer with the modification as changing of betas acording to certain rules mentioned in the report
-    3. customAdam3.py : Contains the custom Adam optimizer with the modification as incorporating the third order moment in the optimizer along with the first and second order moments
-    4. customAdam4.py : Contains the custom Adam optimizer with the modification as replacing the second order moment with third order moement in the optimizer 
+Optimizers :<br>
+Contains the self defined optimizers that were used in the intital experiments (Training Optimizers) <br>
+<pre>    1. customAdam.py : Contains the custom Adam optimizer same as the original Adam optimizer<br>
+    2. customAdam2.py : Contains the custom Adam optimizer with the modification as changing of betas acording to certain rules mentioned in the report<br>
+    3. customAdam3.py : Contains the custom Adam optimizer with the modification as incorporating the third order moment in the optimizer along with the first and second order moments<br>
+    4. customAdam4.py : Contains the custom Adam optimizer with the modification as replacing the second order moment with third order moement in the optimizer <br></pre> 
